@@ -1,6 +1,10 @@
 package com.rtmpworld.server.wowza.plugins;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import com.rtmpworld.server.wowza.pluginsvodprocessorscript.executors.ScriptExecutor;
@@ -29,12 +33,14 @@ public class ModuleVODProcessorScript extends ModuleBase {
 	public static String PROP_SCRIPT_WORKING_DIR = PROP_NAME_PREFIX + "ScriptWorkingDir";
 	public static String PROP_RECORD_START_SCRIPT = PROP_NAME_PREFIX + "RecordStartScript";
 	public static String PROP_RECORD_STOP_SCRIPT = PROP_NAME_PREFIX + "RecordStopScript";
+	public static String PROP_RECORD_COMPLETE_SCRIPT = PROP_NAME_PREFIX + "RecordCompleteScript";
 	
 	private IApplicationInstance appInstance;
 	private boolean moduleDebug;
 	private String workingScriptDir;
 	private String recordStartScript;
 	private String recordStopScript;
+	private String recordCompleteScript;
 	
 	public static WMSProperties serverProps = Server.getInstance().getProperties();
 
@@ -87,7 +93,11 @@ public class ModuleVODProcessorScript extends ModuleBase {
 			if(isRecord) {
 				if(recordStartScript != null && String.valueOf(recordStartScript) != "") {
 					try {
-						CompletableFuture<Integer> future = scriptExecutor.execute(streamName, recordStartScript);
+						
+						List<String> params = new ArrayList<String>();
+						params.add(streamName);
+						
+						CompletableFuture<Integer> future = scriptExecutor.execute(recordStartScript, params);
 						future.thenAccept(value -> {
 							
 							logger.info("Script execution exited with code: {}", value);
@@ -116,7 +126,10 @@ public class ModuleVODProcessorScript extends ModuleBase {
 				if(recordStopScript != null && String.valueOf(recordStopScript) != "") {
 					
 					try {
-						CompletableFuture<Integer> future = scriptExecutor.execute(streamName, recordStopScript);
+						List<String> params = new ArrayList<String>();
+						params.add(streamName);
+						
+						CompletableFuture<Integer> future = scriptExecutor.execute(recordStopScript, params);
 						future.thenAccept(value -> {
 							
 							logger.info("Script execution exited with code: {}", value);
@@ -131,6 +144,43 @@ public class ModuleVODProcessorScript extends ModuleBase {
 	}	
 	
 	
+	private class WriteListener implements IMediaWriterActionNotify
+	{
+
+		@Override
+		public void onWriteComplete(IMediaStream stream, File file)
+		{
+			if(recordStopScript != null && String.valueOf(recordStopScript) != "") {
+				
+				String streamName = stream.getName();
+				String recording_path = file.getAbsolutePath();
+				
+				try {					
+					List<String> params = new ArrayList<String>();
+					params.add(streamName);
+					
+					CompletableFuture<Integer> future = scriptExecutor.execute(recordStopScript, params);
+					future.thenAccept(value -> {
+						
+						logger.info("Script execution exited with code: {}", value);
+						
+					});
+				} catch (IOException e) {
+					logger.error("An rror occurred executing script {}", e);
+				}
+			}
+		}
+
+
+		@Override
+		public void onFLVAddMetadata(IMediaStream arg0, Map<String, Object> arg1) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+
+	
+	
 	public void onAppCreate(IApplicationInstance appInstance)
 	{
 		this.logger = getLogger();
@@ -141,6 +191,7 @@ public class ModuleVODProcessorScript extends ModuleBase {
 		}
 		
 		this.readProperties();
+		this.appInstance.addMediaWriterListener(new WriteListener());
 		
 	}
 
@@ -168,24 +219,43 @@ public class ModuleVODProcessorScript extends ModuleBase {
 		try
 		{
 			moduleDebug = getPropertyValueBoolean(PROP_DEBUG, false);
-			ModuleRemoteUsernamePasswordProvider.moduleDebug = moduleDebug;
+			
+			
 			if(moduleDebug){
 				getLogger().info(MODULE_NAME + ".readProperties moduleDebug mode : " + String.valueOf(moduleDebug));
+			}	
+
+			
+			try
+			{
+				workingScriptDir = getPropertyValueStr(PROP_SCRIPT_WORKING_DIR, null);
+				if(moduleDebug){
+					getLogger().info(MODULE_NAME + ".readProperties workingScriptDir : " + String.valueOf(workingScriptDir));
+				}
+							
+			}
+			catch(Exception e)
+			{
+				getLogger().error(MODULE_NAME + ".readProperties error reading workingScriptDir."+e.getMessage());
 			}
 			
-			
-				
-			workingScriptDir = getPropertyValueStr(PROP_SCRIPT_WORKING_DIR, null);
-			if(moduleDebug){
-				getLogger().info(MODULE_NAME + ".readProperties workingScriptDir : " + String.valueOf(workingScriptDir));
-			}
 		
 			
-			recordStartScript = getPropertyValueStr(PROP_RECORD_START_SCRIPT, null);
-			if(moduleDebug){
-				getLogger().info(MODULE_NAME + ".recordStartScript : " + String.valueOf(recordStartScript));
+			
+			try
+			{
+				recordStartScript = getPropertyValueStr(PROP_RECORD_START_SCRIPT, null);
+				if(moduleDebug){
+					getLogger().info(MODULE_NAME + ".recordStartScript : " + String.valueOf(recordStartScript));
 
+				}
+							
 			}
+			catch(Exception e)
+			{
+				getLogger().error(MODULE_NAME + ".readProperties error reading recordStartScript."+e.getMessage());
+			}
+			
 			
 			
 			try
@@ -198,7 +268,22 @@ public class ModuleVODProcessorScript extends ModuleBase {
 			}
 			catch(Exception e)
 			{
-				getLogger().error(MODULE_NAME + ".readProperties error reading authenticationEndpoint."+e.getMessage());
+				getLogger().error(MODULE_NAME + ".readProperties error reading recordStopScript."+e.getMessage());
+			}
+
+			
+			
+			try
+			{
+				recordCompleteScript = getPropertyValueStr(PROP_RECORD_COMPLETE_SCRIPT, null);
+				if(moduleDebug){
+					getLogger().info(MODULE_NAME + ".readProperties recordCompleteScript : " + String.valueOf(recordCompleteScript));
+				}
+							
+			}
+			catch(Exception e)
+			{
+				getLogger().error(MODULE_NAME + ".readProperties error reading recordCompleteScript."+e.getMessage());
 			}
 
 		}
@@ -238,6 +323,5 @@ public class ModuleVODProcessorScript extends ModuleBase {
 		value = appInstance.getProperties().getPropertyBoolean(key, value);
 		return value;
 	}
-	
 
 }

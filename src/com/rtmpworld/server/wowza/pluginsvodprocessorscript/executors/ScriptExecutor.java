@@ -2,6 +2,7 @@ package com.rtmpworld.server.wowza.pluginsvodprocessorscript.executors;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -71,9 +72,11 @@ public class ScriptExecutor implements IScriptExecutor {
 	
 	
 	
-	private Process buildExecutingProcess(String streamName, String scriptPath, String workingDir) throws IOException
+	private Process buildExecutingProcess(String scriptPath, List<String> params, String workingDir) throws IOException
 	{
 		String os = WowzaUtils.getOS();
+		WMSLoggerFactory.getLogger(ModuleVODProcessorScript.class).info("Building executable process for {}", os);
+		
 				
 		List<String> list = new ArrayList<String>();  
 		
@@ -84,8 +87,10 @@ public class ScriptExecutor implements IScriptExecutor {
 		}
 		
         list.add(scriptPath); // batch or sh
-        list.add(streamName); // stream name aS PARAmeter
         
+        for(String param : params) {
+        	list.add(param);
+        }        
 
 		ProcessBuilder processBuilder = new ProcessBuilder();
 		if(workingDir != null) {
@@ -97,22 +102,27 @@ public class ScriptExecutor implements IScriptExecutor {
 		
 	
 	
-	public CompletableFuture<Integer> execute(String streamName, String scriptPath) throws IOException
+	public CompletableFuture<Integer> execute(String scriptPath, List<String> params) throws IOException
 	{
-		return execute(streamName, scriptPath, null);
+		return execute(scriptPath, params, null);
 	}
 	
 	
 	
-	public CompletableFuture<Integer> execute(String streamName,String scriptPath, String workingDir) throws IOException
+	public CompletableFuture<Integer> execute(String scriptPath, List<String> params, String workingDir) throws IOException
 	{
 		WMSLoggerFactory.getLogger(ModuleVODProcessorScript.class).info("Executing script {}", scriptPath);
-		return executeScript(streamName, scriptPath, workingDir);
+		File script = new File(scriptPath);
+		if(!script.exists()) {
+			throw new FileNotFoundException("Script not found at " + scriptPath);
+		}
+		
+		return executeScript(scriptPath, params, workingDir);
 	}
 	
 	
 	
-	private CompletableFuture<Integer> executeScript(String streamName, String scriptPath, String workingDir)
+	private CompletableFuture<Integer> executeScript(String scriptPath, List<String> params, String workingDir)
 	{
 				
 		return CompletableFuture.supplyAsync(()->{
@@ -121,7 +131,7 @@ public class ScriptExecutor implements IScriptExecutor {
 			
 			try 
 			{
-				Process proc = buildExecutingProcess(streamName, scriptPath, workingDir);
+				Process proc = buildExecutingProcess(scriptPath, params, workingDir);
 				BufferedReader reader =
 	                    new BufferedReader(new InputStreamReader(proc.getInputStream()));
 

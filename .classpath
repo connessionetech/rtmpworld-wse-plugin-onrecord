@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="bin" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="C:/Program Files/Wowza Media Systems/Wowza_Streaming_Engine_4_8_20_1/lib/annotations-2.17.107.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Wowza Media Systems/Wowza_Streaming_Engine_4_8_20_1/lib/apache-client-2.17.107.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Wowza Media Systems/Wowza_Streaming_Engine_4_8_20_1/lib/api-common-1.10.1.jar"/>
@@ -98,8 +102,6 @@
 	<classpathentry kind="lib" path="C:/Program Files/Wowza Media Systems/Wowza_Streaming_Engine_4_8_20_1/lib/protocol-core-2.17.107.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Wowza Media Systems/Wowza_Streaming_Engine_4_8_20_1/lib/reactive-streams-1.0.3.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Wowza Media Systems/Wowza_Streaming_Engine_4_8_20_1/lib/regions-2.17.107.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Wowza Media Systems/Wowza_Streaming_Engine_4_8_20_1/lib/rtmpworld-wse-plugin-remoteauthentication-0.0.1.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Wowza Media Systems/Wowza_Streaming_Engine_4_8_20_1/lib/rtmpworld-wse-plugin-vodprocessor.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Wowza Media Systems/Wowza_Streaming_Engine_4_8_20_1/lib/rtmpworld-wse-utilities-0.0.1.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Wowza Media Systems/Wowza_Streaming_Engine_4_8_20_1/lib/s3-2.17.107.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Wowza Media Systems/Wowza_Streaming_Engine_4_8_20_1/lib/sdk-core-2.17.107.jar"/>
