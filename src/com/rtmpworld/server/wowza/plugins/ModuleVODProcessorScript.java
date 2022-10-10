@@ -94,6 +94,10 @@ public class ModuleVODProcessorScript extends ModuleBase {
 				if(recordStartScript != null && String.valueOf(recordStartScript) != "") {
 					try {
 						
+						if(moduleDebug){
+							logger.info(MODULE_NAME + ".onPublish => RECORD START => " + stream.getName());
+						}
+						
 						List<String> params = new ArrayList<String>();
 						params.add(streamName);
 						
@@ -126,6 +130,11 @@ public class ModuleVODProcessorScript extends ModuleBase {
 				if(recordStopScript != null && String.valueOf(recordStopScript) != "") {
 					
 					try {
+						
+						if(moduleDebug){
+							logger.info(MODULE_NAME + ".onUnPublish => RECORD STOP => " + stream.getName());
+						}
+						
 						List<String> params = new ArrayList<String>();
 						params.add(streamName);
 						
@@ -155,9 +164,15 @@ public class ModuleVODProcessorScript extends ModuleBase {
 				String streamName = stream.getName();
 				String recording_path = file.getAbsolutePath();
 				
-				try {					
+				try {	
+					
+					if(moduleDebug){
+						logger.info(MODULE_NAME + ".onWriteComplete => RECORD COMPLETE => " + stream.getName());
+					}
+					
 					List<String> params = new ArrayList<String>();
 					params.add(streamName);
+					params.add(recording_path);
 					
 					CompletableFuture<Integer> future = scriptExecutor.execute(recordStopScript, params);
 					future.thenAccept(value -> {
@@ -166,12 +181,13 @@ public class ModuleVODProcessorScript extends ModuleBase {
 						
 					});
 				} catch (IOException e) {
-					logger.error("An rror occurred executing script {}", e);
+					logger.error("An error occurred executing script {}", e);
 				}
 			}
 		}
 
 
+		
 		@Override
 		public void onFLVAddMetadata(IMediaStream arg0, Map<String, Object> arg1) {
 			// TODO Auto-generated method stub
@@ -192,6 +208,7 @@ public class ModuleVODProcessorScript extends ModuleBase {
 		
 		this.readProperties();
 		this.appInstance.addMediaWriterListener(new WriteListener());
+		this.scriptExecutor.setLogger(logger);
 		
 	}
 

@@ -16,6 +16,7 @@ import com.rtmpworld.server.wowza.plugins.ModuleVODProcessorScript;
 import com.rtmpworld.server.wowza.plugins.vodprocessorscript.interfaces.IScriptExecutor;
 import com.rtmpworld.server.wowza.utils.WowzaUtils;
 import com.rtmpworld.server.wowza.webrtc.constants.OSType;
+import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 
 public class ScriptExecutor implements IScriptExecutor {
@@ -34,6 +35,7 @@ public class ScriptExecutor implements IScriptExecutor {
 	private static int threadPoolAwaitTerminationTimeout;
 	private static boolean serverDebug;
 	
+	private WMSLogger logger;
 	
 	
 	static  
@@ -75,7 +77,7 @@ public class ScriptExecutor implements IScriptExecutor {
 	private Process buildExecutingProcess(String scriptPath, List<String> params, String workingDir) throws IOException
 	{
 		String os = WowzaUtils.getOS();
-		WMSLoggerFactory.getLogger(ModuleVODProcessorScript.class).info("Building executable process for {}", os);
+		this.logger.info("Building executable process for {}", os);
 		
 				
 		List<String> list = new ArrayList<String>();  
@@ -111,7 +113,8 @@ public class ScriptExecutor implements IScriptExecutor {
 	
 	public CompletableFuture<Integer> execute(String scriptPath, List<String> params, String workingDir) throws IOException
 	{
-		WMSLoggerFactory.getLogger(ModuleVODProcessorScript.class).info("Executing script {}", scriptPath);
+		this.logger.info("Executing script {}", scriptPath);
+		
 		File script = new File(scriptPath);
 		if(!script.exists()) {
 			throw new FileNotFoundException("Script not found at " + scriptPath);
@@ -137,19 +140,31 @@ public class ScriptExecutor implements IScriptExecutor {
 
 	            String line;
 	            while ((line = reader.readLine()) != null) {
-	            	WMSLoggerFactory.getLogger(ModuleVODProcessorScript.class).info(line);
+	            	this.logger.info(line);
 	            }
 
 	            exit_code = proc.waitFor();
 			} 
 			catch (IOException | InterruptedException e) 
 			{
-				WMSLoggerFactory.getLogger(ModuleVODProcessorScript.class).error("An error occurred while executing script {}", e);
+				this.logger.error("An error occurred while executing script {}", e);
 			}
 			
 		    return exit_code;		
 			
 		}, eventRequestThreadPool);
+	}
+
+
+
+	public WMSLogger getLogger() {
+		return logger;
+	}
+
+
+
+	public void setLogger(WMSLogger logger) {
+		this.logger = logger;
 	}
 
 }
