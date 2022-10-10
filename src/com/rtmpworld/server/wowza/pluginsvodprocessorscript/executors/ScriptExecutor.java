@@ -38,6 +38,12 @@ public class ScriptExecutor implements IScriptExecutor {
 	private WMSLogger logger;
 	
 	
+	public ScriptExecutor()
+	{
+		logger = WMSLoggerFactory.getLogger(ScriptExecutor.class);
+	}
+	
+	
 	static  
 	{
 		serverDebug = ModuleVODProcessorScript.serverProps.getPropertyBoolean(ModuleVODProcessorScript.PROP_DEBUG, false);
@@ -137,13 +143,14 @@ public class ScriptExecutor implements IScriptExecutor {
 				Process proc = buildExecutingProcess(scriptPath, params, workingDir);
 				BufferedReader reader =
 	                    new BufferedReader(new InputStreamReader(proc.getInputStream()));
-
+	
 	            String line;
 	            while ((line = reader.readLine()) != null) {
-	            	this.logger.info(line);
+	            	this.logger.debug(line);
 	            }
 
-	            exit_code = proc.waitFor();
+	            proc.waitFor(5000, TimeUnit.MILLISECONDS);
+	            exit_code  = proc.exitValue();
 			} 
 			catch (IOException | InterruptedException e) 
 			{
@@ -153,18 +160,6 @@ public class ScriptExecutor implements IScriptExecutor {
 		    return exit_code;		
 			
 		}, eventRequestThreadPool);
-	}
-
-
-
-	public WMSLogger getLogger() {
-		return logger;
-	}
-
-
-
-	public void setLogger(WMSLogger logger) {
-		this.logger = logger;
 	}
 
 }

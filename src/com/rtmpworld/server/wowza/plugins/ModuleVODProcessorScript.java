@@ -159,7 +159,7 @@ public class ModuleVODProcessorScript extends ModuleBase {
 		@Override
 		public void onWriteComplete(IMediaStream stream, File file)
 		{
-			if(recordStopScript != null && String.valueOf(recordStopScript) != "") {
+			if(recordCompleteScript != null && String.valueOf(recordCompleteScript) != "") {
 				
 				String streamName = stream.getName();
 				String recording_path = file.getAbsolutePath();
@@ -174,10 +174,10 @@ public class ModuleVODProcessorScript extends ModuleBase {
 					params.add(streamName);
 					params.add(recording_path);
 					
-					CompletableFuture<Integer> future = scriptExecutor.execute(recordStopScript, params);
-					future.thenAccept(value -> {
-						
-						logger.info("Script execution exited with code: {}", value);
+					CompletableFuture<Integer> future = scriptExecutor.execute(recordCompleteScript, params);
+					future.thenAccept(value -> {						
+						//System.out.println("value" + String.valueOf(value));
+						logger.info("Script execution exited with code: {}", String.valueOf(value));
 						
 					});
 				} catch (IOException e) {
@@ -208,7 +208,6 @@ public class ModuleVODProcessorScript extends ModuleBase {
 		
 		this.readProperties();
 		this.appInstance.addMediaWriterListener(new WriteListener());
-		this.scriptExecutor.setLogger(logger);
 		
 	}
 
