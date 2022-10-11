@@ -24,7 +24,7 @@ public class ScriptExecutor implements IScriptExecutor {
 	
 	// for threading
 	private static String PROP_THREADPOOL_SIZE = ModuleVODProcessorScript.PROP_NAME_PREFIX + "ThreadPoolSize";
-	private static String PROP_DELAY_FOR_FAILED_REQUESTS = ModuleVODProcessorScript.PROP_NAME_PREFIX + "DelayForFailedRequests";
+	private static String PROP_IDLE_TIMEOUT = ModuleVODProcessorScript.PROP_NAME_PREFIX + "DelayForFailedRequests";
 	private static String PROP_THREADPOOL_TERMINATION_TIMEOUT = ModuleVODProcessorScript.PROP_NAME_PREFIX + "ThreadPoolTerminationTimeout";
 	
 	
@@ -33,7 +33,6 @@ public class ScriptExecutor implements IScriptExecutor {
 	private static int threadIdleTimeout;		
 	
 	private static int threadPoolAwaitTerminationTimeout;
-	private static boolean serverDebug;
 	
 	private WMSLogger logger;
 	
@@ -44,14 +43,11 @@ public class ScriptExecutor implements IScriptExecutor {
 	}
 	
 	
+	
 	static  
 	{
-		serverDebug = ModuleVODProcessorScript.serverProps.getPropertyBoolean(ModuleVODProcessorScript.PROP_DEBUG, false);
-		if (WMSLoggerFactory.getLogger(ModuleVODProcessorScript.class).isDebugEnabled())
-			serverDebug = true;
-		
 		threadPoolSize = ModuleVODProcessorScript.serverProps.getPropertyInt(PROP_THREADPOOL_SIZE, 5);
-		threadIdleTimeout = ModuleVODProcessorScript.serverProps.getPropertyInt(PROP_DELAY_FOR_FAILED_REQUESTS, 60);
+		threadIdleTimeout = ModuleVODProcessorScript.serverProps.getPropertyInt(PROP_IDLE_TIMEOUT, 60);
 		threadPoolAwaitTerminationTimeout = ModuleVODProcessorScript.serverProps.getPropertyInt(PROP_THREADPOOL_TERMINATION_TIMEOUT, 5);
 		eventRequestThreadPool = new ThreadPoolExecutor(threadPoolSize, threadPoolSize, threadIdleTimeout, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
@@ -62,8 +58,6 @@ public class ScriptExecutor implements IScriptExecutor {
 			{
 				try
 				{
-					if (serverDebug)
-						WMSLoggerFactory.getLogger(getClass()).info(ModuleVODProcessorScript.MODULE_NAME + " Runtime.getRuntime().addShutdownHook");
 					eventRequestThreadPool.shutdown();
 					if (!eventRequestThreadPool.awaitTermination(threadPoolAwaitTerminationTimeout, TimeUnit.SECONDS))
 						eventRequestThreadPool.shutdownNow();
