@@ -18,18 +18,19 @@ import com.wowza.wms.stream.*;
 
 
 
-public class ModuleVODProcessorScript extends ModuleBase {
+public class ModuleVODPostProcessScript extends ModuleBase {
 	
-	public static String MODULE_NAME = "ModuleVODProcessorScript";
+	public static String MODULE_NAME = "ModuleVODPostRecordScript";
 	
 	// module name and property name prefix
-	public static String PROP_NAME_PREFIX = "vodprocessorscript";
+	public static String PROP_NAME_PREFIX = "vodpostprocess";
 
 	
 	// for logging
 	public static String PROP_DEBUG = PROP_NAME_PREFIX + "Debug";	
 	
 	
+	// module properties
 	public static String PROP_SCRIPT_WORKING_DIR = PROP_NAME_PREFIX + "ScriptWorkingDir";
 	public static String PROP_RECORD_START_SCRIPT = PROP_NAME_PREFIX + "RecordStartScript";
 	public static String PROP_RECORD_STOP_SCRIPT = PROP_NAME_PREFIX + "RecordStopScript";
