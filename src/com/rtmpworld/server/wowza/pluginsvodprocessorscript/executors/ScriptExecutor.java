@@ -20,11 +20,11 @@ import com.wowza.wms.logging.WMSLogger;
 import com.wowza.wms.logging.WMSLoggerFactory;
 
 public class ScriptExecutor implements IScriptExecutor {
-
+	
 	
 	// for threading
 	private static String PROP_THREADPOOL_SIZE = ModuleVODPostProcessScript.PROP_NAME_PREFIX + "ThreadPoolSize";
-	private static String PROP_IDLE_TIMEOUT = ModuleVODPostProcessScript.PROP_NAME_PREFIX + "DelayForFailedRequests";
+	private static String PROP_IDLE_TIMEOUT = ModuleVODPostProcessScript.PROP_NAME_PREFIX + "ThreadIdleTimeout";
 	private static String PROP_THREADPOOL_TERMINATION_TIMEOUT = ModuleVODPostProcessScript.PROP_NAME_PREFIX + "ThreadPoolTerminationTimeout";
 	
 	
@@ -46,7 +46,7 @@ public class ScriptExecutor implements IScriptExecutor {
 	
 	static  
 	{
-		threadPoolSize = ModuleVODPostProcessScript.serverProps.getPropertyInt(PROP_THREADPOOL_SIZE, 5);
+		threadPoolSize = ModuleVODPostProcessScript.serverProps.getPropertyInt(PROP_THREADPOOL_SIZE, 10);
 		threadIdleTimeout = ModuleVODPostProcessScript.serverProps.getPropertyInt(PROP_IDLE_TIMEOUT, 60);
 		threadPoolAwaitTerminationTimeout = ModuleVODPostProcessScript.serverProps.getPropertyInt(PROP_THREADPOOL_TERMINATION_TIMEOUT, 5);
 		eventRequestThreadPool = new ThreadPoolExecutor(threadPoolSize, threadPoolSize, threadIdleTimeout, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());

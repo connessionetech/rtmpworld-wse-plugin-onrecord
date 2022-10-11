@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import com.rtmpworld.server.wowza.pluginsvodprocessorscript.executors.ScriptExecutor;
+import com.rtmpworld.server.wowza.utils.WowzaUtils;
 import com.wowza.wms.application.*;
 
 
@@ -235,7 +236,7 @@ public class ModuleVODPostProcessScript extends ModuleBase {
 		
 		try
 		{
-			moduleDebug = getPropertyValueBoolean(PROP_DEBUG, false);
+			moduleDebug = WowzaUtils.getPropertyValueBoolean(serverProps, appInstance, PROP_DEBUG, false);
 			
 			
 			if(moduleDebug){
@@ -245,7 +246,7 @@ public class ModuleVODPostProcessScript extends ModuleBase {
 			
 			try
 			{
-				workingScriptDir = getPropertyValueStr(PROP_SCRIPT_WORKING_DIR, null);
+				workingScriptDir = WowzaUtils.getPropertyValueStr(serverProps, appInstance, PROP_SCRIPT_WORKING_DIR, null);
 				if(moduleDebug){
 					getLogger().info(MODULE_NAME + ".readProperties workingScriptDir : " + String.valueOf(workingScriptDir));
 				}
@@ -261,7 +262,7 @@ public class ModuleVODPostProcessScript extends ModuleBase {
 			
 			try
 			{
-				recordStartScript = getPropertyValueStr(PROP_RECORD_START_SCRIPT, null);
+				recordStartScript = WowzaUtils.getPropertyValueStr(serverProps, appInstance, PROP_RECORD_START_SCRIPT, null);
 				if(moduleDebug){
 					getLogger().info(MODULE_NAME + ".recordStartScript : " + String.valueOf(recordStartScript));
 
@@ -277,7 +278,7 @@ public class ModuleVODPostProcessScript extends ModuleBase {
 			
 			try
 			{
-				recordStopScript = getPropertyValueStr(PROP_RECORD_STOP_SCRIPT, null);
+				recordStopScript = WowzaUtils.getPropertyValueStr(serverProps, appInstance, PROP_RECORD_STOP_SCRIPT, null);
 				if(moduleDebug){
 					getLogger().info(MODULE_NAME + ".readProperties recordStopScript : " + String.valueOf(recordStopScript));
 				}
@@ -292,7 +293,7 @@ public class ModuleVODPostProcessScript extends ModuleBase {
 			
 			try
 			{
-				recordCompleteScript = getPropertyValueStr(PROP_RECORD_COMPLETE_SCRIPT, null);
+				recordCompleteScript = WowzaUtils.getPropertyValueStr(serverProps, appInstance, PROP_RECORD_COMPLETE_SCRIPT, null);
 				if(moduleDebug){
 					getLogger().info(MODULE_NAME + ".readProperties recordCompleteScript : " + String.valueOf(recordCompleteScript));
 				}
@@ -308,37 +309,6 @@ public class ModuleVODPostProcessScript extends ModuleBase {
 		{
 			getLogger().error(MODULE_NAME + " Error reading properties {}", e);
 		}
-	}
-	
-	
-	/**
-	 * Retrieves a server property value as a string
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	private String getPropertyValueStr(String key, String defaultValue)
-	{
-		String value = serverProps.getPropertyStr(key, defaultValue);
-		value = appInstance.getProperties().getPropertyStr(key, value);
-		return value;
-	}
-	
-	
-	
-	/**
-	 * Retrieves a server property value as a boolean
-	 * 
-	 * @param key
-	 * @param defaultValue
-	 * @return
-	 */
-	private boolean getPropertyValueBoolean(String key, boolean defaultValue)
-	{
-		boolean value = serverProps.getPropertyBoolean(key, defaultValue);
-		value = appInstance.getProperties().getPropertyBoolean(key, value);
-		return value;
 	}
 
 }

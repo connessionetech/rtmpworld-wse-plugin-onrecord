@@ -2,7 +2,7 @@
 <project name="rtmpworld-wse-plugin-vodprocessor" default="jar" basedir="..">
 	
 	<property name="wowza.lib.dir" value="C:/Program Files/Wowza Media Systems/Wowza_Streaming_Engine_4_8_20_1/lib"/>
-	<property name="jar.filename" value="rtmpworld-wse-plugin-vodprocessor"/>
+	<property name="jar.filename" value="rtmpworld-wse-plugin-vodpostrecordscript"/>
 	<property name="core.build.dir" value="bin"/>
 	<property name="jar.version" value="0.0.1"/>
 	<property name="jar.output" value="${jar.filename}-${jar.version}.jar"/>
