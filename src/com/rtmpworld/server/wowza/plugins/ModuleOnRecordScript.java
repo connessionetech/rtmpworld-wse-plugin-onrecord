@@ -19,12 +19,12 @@ import com.wowza.wms.stream.*;
 
 
 
-public class ModuleVODPostProcessScript extends ModuleBase {
+public class ModuleOnRecordScript extends ModuleBase {
 	
-	public static String MODULE_NAME = "ModuleVODPostRecordScript";
+	public static String MODULE_NAME = "ModuleOnRecordScript";
 	
 	// module name and property name prefix
-	public static String PROP_NAME_PREFIX = "vodpostprocess";
+	public static String PROP_NAME_PREFIX = "onrecord";
 
 	
 	// for logging
