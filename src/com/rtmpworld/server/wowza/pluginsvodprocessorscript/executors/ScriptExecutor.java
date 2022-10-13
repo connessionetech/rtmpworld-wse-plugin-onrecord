@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.rtmpworld.server.wowza.plugins.ModuleVODPostProcessScript;
+import com.rtmpworld.server.wowza.plugins.ModuleOnRecordScript;
 import com.rtmpworld.server.wowza.plugins.vodprocessorscript.interfaces.IScriptExecutor;
 import com.rtmpworld.server.wowza.utils.WowzaUtils;
 import com.rtmpworld.server.wowza.webrtc.constants.OSType;
@@ -23,9 +23,9 @@ public class ScriptExecutor implements IScriptExecutor {
 	
 	
 	// for threading
-	private static String PROP_THREADPOOL_SIZE = ModuleVODPostProcessScript.PROP_NAME_PREFIX + "ThreadPoolSize";
-	private static String PROP_IDLE_TIMEOUT = ModuleVODPostProcessScript.PROP_NAME_PREFIX + "ThreadIdleTimeout";
-	private static String PROP_THREADPOOL_TERMINATION_TIMEOUT = ModuleVODPostProcessScript.PROP_NAME_PREFIX + "ThreadPoolTerminationTimeout";
+	private static String PROP_THREADPOOL_SIZE = ModuleOnRecordScript.PROP_NAME_PREFIX + "ThreadPoolSize";
+	private static String PROP_IDLE_TIMEOUT = ModuleOnRecordScript.PROP_NAME_PREFIX + "ThreadIdleTimeout";
+	private static String PROP_THREADPOOL_TERMINATION_TIMEOUT = ModuleOnRecordScript.PROP_NAME_PREFIX + "ThreadPoolTerminationTimeout";
 	
 	
 	private static ThreadPoolExecutor eventRequestThreadPool;
@@ -46,9 +46,9 @@ public class ScriptExecutor implements IScriptExecutor {
 	
 	static  
 	{
-		threadPoolSize = ModuleVODPostProcessScript.serverProps.getPropertyInt(PROP_THREADPOOL_SIZE, 10);
-		threadIdleTimeout = ModuleVODPostProcessScript.serverProps.getPropertyInt(PROP_IDLE_TIMEOUT, 60);
-		threadPoolAwaitTerminationTimeout = ModuleVODPostProcessScript.serverProps.getPropertyInt(PROP_THREADPOOL_TERMINATION_TIMEOUT, 5);
+		threadPoolSize = ModuleOnRecordScript.serverProps.getPropertyInt(PROP_THREADPOOL_SIZE, 10);
+		threadIdleTimeout = ModuleOnRecordScript.serverProps.getPropertyInt(PROP_IDLE_TIMEOUT, 60);
+		threadPoolAwaitTerminationTimeout = ModuleOnRecordScript.serverProps.getPropertyInt(PROP_THREADPOOL_TERMINATION_TIMEOUT, 5);
 		eventRequestThreadPool = new ThreadPoolExecutor(threadPoolSize, threadPoolSize, threadIdleTimeout, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
 		Runtime.getRuntime().addShutdownHook(new Thread()
@@ -65,7 +65,7 @@ public class ScriptExecutor implements IScriptExecutor {
 				catch (InterruptedException e)
 				{
 					// problem
-					WMSLoggerFactory.getLogger(ModuleVODPostProcessScript.class).error(ModuleVODPostProcessScript.MODULE_NAME + ".ShutdownHook.run() InterruptedException", e);
+					WMSLoggerFactory.getLogger(ModuleOnRecordScript.class).error(ModuleOnRecordScript.MODULE_NAME + ".ShutdownHook.run() InterruptedException", e);
 				}
 			}
 		});
