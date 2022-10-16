@@ -21,6 +21,11 @@ import com.wowza.wms.stream.*;
 
 public class ModuleOnRecordScript extends ModuleBase {
 	
+	public static String RECORD_START = "RECORD_START";
+	public static String RECORD_STOP = "RECORD_STOP";
+	public static String RECORD_COMPLETE = "RECORD_COMPLETE";
+	
+	
 	public static String MODULE_NAME = "ModuleOnRecordScript";
 	
 	// module name and property name prefix
@@ -101,6 +106,7 @@ public class ModuleOnRecordScript extends ModuleBase {
 						}
 						
 						List<String> params = new ArrayList<String>();
+						params.add(RECORD_START);
 						params.add(streamName);
 						
 						CompletableFuture<Integer> future = scriptExecutor.execute(recordStartScript, params);
@@ -138,6 +144,7 @@ public class ModuleOnRecordScript extends ModuleBase {
 						}
 						
 						List<String> params = new ArrayList<String>();
+						params.add(RECORD_STOP);
 						params.add(streamName);
 						
 						CompletableFuture<Integer> future = scriptExecutor.execute(recordStopScript, params);
@@ -173,6 +180,7 @@ public class ModuleOnRecordScript extends ModuleBase {
 					}
 					
 					List<String> params = new ArrayList<String>();
+					params.add(RECORD_COMPLETE);
 					params.add(streamName);
 					params.add(recording_path);
 					
