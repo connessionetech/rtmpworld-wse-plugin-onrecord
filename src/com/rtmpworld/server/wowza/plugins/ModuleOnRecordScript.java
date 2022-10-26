@@ -21,8 +21,6 @@ import com.wowza.wms.stream.*;
 
 public class ModuleOnRecordScript extends ModuleBase {
 	
-	public static String RECORD_START = "RECORD_START";
-	public static String RECORD_STOP = "RECORD_STOP";
 	public static String RECORD_COMPLETE = "RECORD_COMPLETE";
 	
 	
@@ -93,33 +91,6 @@ public class ModuleOnRecordScript extends ModuleBase {
 			if(moduleDebug){
 				logger.info(MODULE_NAME + ".onPublish => " + stream.getName());
 			}
-			
-			if (appInstance.getMediaCasterStreams().getMediaCaster(streamName) != null)
-				return;
-			
-			if(isRecord) {
-				if(recordStartScript != null && String.valueOf(recordStartScript) != "") {
-					try {
-						
-						if(moduleDebug){
-							logger.info(MODULE_NAME + ".onPublish => RECORD START => " + stream.getName());
-						}
-						
-						List<String> params = new ArrayList<String>();
-						params.add(RECORD_START);
-						params.add(streamName);
-						
-						CompletableFuture<Integer> future = scriptExecutor.execute(recordStartScript, params);
-						future.thenAccept(value -> {
-							
-							logger.info("Script execution exited with code: {}", value);
-							
-						});
-					} catch (IOException e) {
-						logger.error("An rror occurred executing script {}", e);						
-					}
-				}
-			}
 		}
 
 
@@ -129,34 +100,6 @@ public class ModuleOnRecordScript extends ModuleBase {
 		{
 			if(moduleDebug){
 				logger.info(MODULE_NAME + ".onUnPublish => " + stream.getName());
-			}
-			
-			if (appInstance.getMediaCasterStreams().getMediaCaster(streamName) != null)
-				return;
-			
-			if(isRecord) {
-				if(recordStopScript != null && String.valueOf(recordStopScript) != "") {
-					
-					try {
-						
-						if(moduleDebug){
-							logger.info(MODULE_NAME + ".onUnPublish => RECORD STOP => " + stream.getName());
-						}
-						
-						List<String> params = new ArrayList<String>();
-						params.add(RECORD_STOP);
-						params.add(streamName);
-						
-						CompletableFuture<Integer> future = scriptExecutor.execute(recordStopScript, params);
-						future.thenAccept(value -> {
-							
-							logger.info("Script execution exited with code: {}", value);
-							
-						});
-					} catch (IOException e) {
-						logger.error("An rror occurred executing script {}", e);
-					}
-				}
 			}
 		}
 	}	
@@ -263,40 +206,8 @@ public class ModuleOnRecordScript extends ModuleBase {
 			catch(Exception e)
 			{
 				getLogger().error(MODULE_NAME + ".readProperties error reading workingScriptDir."+e.getMessage());
-			}
-			
+			}			
 		
-			
-			
-			try
-			{
-				recordStartScript = WowzaUtils.getPropertyValueStr(serverProps, appInstance, PROP_RECORD_START_SCRIPT, null);
-				if(moduleDebug){
-					getLogger().info(MODULE_NAME + ".recordStartScript : " + String.valueOf(recordStartScript));
-
-				}
-							
-			}
-			catch(Exception e)
-			{
-				getLogger().error(MODULE_NAME + ".readProperties error reading recordStartScript."+e.getMessage());
-			}
-			
-			
-			
-			try
-			{
-				recordStopScript = WowzaUtils.getPropertyValueStr(serverProps, appInstance, PROP_RECORD_STOP_SCRIPT, null);
-				if(moduleDebug){
-					getLogger().info(MODULE_NAME + ".readProperties recordStopScript : " + String.valueOf(recordStopScript));
-				}
-							
-			}
-			catch(Exception e)
-			{
-				getLogger().error(MODULE_NAME + ".readProperties error reading recordStopScript."+e.getMessage());
-			}
-
 			
 			
 			try
