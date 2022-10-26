@@ -43,8 +43,6 @@ public class ModuleOnRecordScript extends ModuleBase {
 	private IApplicationInstance appInstance;
 	private boolean moduleDebug;
 	private String workingScriptDir;
-	private String recordStartScript;
-	private String recordStopScript;
 	private String recordCompleteScript;
 	
 	public static WMSProperties serverProps = Server.getInstance().getProperties();
