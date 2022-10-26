@@ -14,4 +14,4 @@ This library is required to be in your classpath if you plan on compiling the pl
 # Documentation
 ---
 
-The detailed documentation on the subject can be found [here](https://grahil.rtmpworld.com/blog/execute-custom-logic-via-shell-script-after-recording-a-stream-in-the-wowza-streaming-engine/).
+The detailed documentation on the subject can be found [here](https://rtmpworld.com/blog/execute-custom-logic-via-shell-script-after-recording-a-stream-in-the-wowza-streaming-engine/).
