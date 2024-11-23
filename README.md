@@ -7,7 +7,7 @@ The **ModuleOnRecordScript** module for Wowza Streaming Engine™ media server s
 # Dependency Note
 ---
 
-This module is dependent on the [RTMPWorld Shared Library For Wowza Streaming Engine](https://rtmpworld.com/product/rtmpworld-wowza-streaming-engine-utilities/). Please follow documentation on how to download & install the dependency jar on your Wowza Streaming Engine.
+This module is dependent on the [Shared Library For Wowza Streaming Engine](https://github.com/connessionetech/rtmpworld-wse-utilities). Please follow documentation on how to download & install the dependency jar on your Wowza Streaming Engine.
 
 This library is required to be in your classpath if you plan on compiling the plugin on your own in your favourite IDE.
 
@@ -15,3 +15,8 @@ This library is required to be in your classpath if you plan on compiling the pl
 ---
 
 The detailed documentation on the subject can be found [here](https://rtmpworld.com/blog/execute-custom-logic-via-shell-script-after-recording-a-stream-in-the-wowza-streaming-engine/).
+
+## Note
+---
+
+The application codebase is inspired from old plugins at [WowzaMediaSystems github page] (https://github.com/WowzaMediaSystems)
